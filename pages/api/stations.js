@@ -1,4 +1,8 @@
 export default async function handler(req, res) {
+    // 👇 添加这两行调试日志
+  console.log('>>> AIRTABLE_API_KEY length:', process.env.AIRTABLE_API_KEY?.length);
+  console.log('>>> AIRTABLE_BASE_ID:', process.env.AIRTABLE_BASE_ID);
+  
   const { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } = process.env;
   if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
     return res.status(500).json({ error: 'Airtable config missing' });
@@ -18,4 +22,5 @@ export default async function handler(req, res) {
     console.error('API Error:', e);
     res.status(500).json({ error: 'Failed to fetch stations' });
   }
+
 }
