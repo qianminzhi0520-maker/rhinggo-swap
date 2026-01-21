@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rhinggo Admin</title>
+  <meta name="viewport" content="width=device-width">
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+    input, button { padding: 10px; margin: 8px 0; width: 100%; box-sizing: border-box; }
+    .form-group { margin-bottom: 15px; }
+    button { background: #1a5fb4; color: white; border: none; cursor: pointer; }
+    .section { border: 1px solid #ddd; padding: 15px; margin: 20px 0; border-radius: 8px; }
+    h2 { color: #1a5fb4; }
+  </style>
+</head>
+<body>
+  <h1>Rhinggo Energy - Station Manager</h1>
+  
+  <div class="form-group">
+    <input type="password" id="password" placeholder="Admin Password" />
+  </div>
+
+  <!-- Add Station -->
+  <div class="section">
+    <h2>Add New Station</h2>
+    <div class="form-group"><input id="add-name" placeholder="Station Name (e.g. Diani Main)"></div>
+    <div class="form-group"><input id="add-lat" placeholder="Latitude (e.g. -4.268158)"></div>
+    <div class="form-group"><input id="add-lng" placeholder="Longitude (e.g. 39.569775)"></div>
+    <div class="form-group"><input id="add-phone" placeholder="Phone (e.g. +254700000001)"></div>
+    <div class="form-group"><input id="add-total" placeholder="Total Batteries (e.g. 20)"></div>
+    <div class="form-group"><input id="add-available" placeholder="Available Batteries (e.g. 15)"></div>
+    <button onclick="addStation()">➕ Add Station</button>
+  </div>
+
+  <!-- Update Station -->
+  <div class="section">
+    <h2>Update Existing Station</h2>
+    <div class="form-group"><input id="update-id" placeholder="Record ID (from Airtable)"></div>
+    <div class="form-group"><input id="update-name" placeholder="New Name (optional)"></div>
+    <div class="form-group"><input id="update-lat" placeholder="New Latitude (optional)"></div>
+    <div class="form-group"><input id="update-lng" placeholder="New Longitude (optional)"></div>
+    <div class="form-group"><input id="update-phone" placeholder="New Phone (optional)"></div>
+    <div class="form-group"><input id="update-available" placeholder="New Available Batteries (optional)"></div>
+    <button onclick="updateStation()">✏️ Update Station</button>
+  </div>
+
+  <script>
+    async function callApi(endpoint, body) {
+      const password = document.getElementById('password').value;
+      if (!password) return alert('Please enter admin password');
+
+      const res = await fetch(`/api/admin/${endpoint}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ password, ...body })
+      });
+      const result = await res.json();
+      alert(res.ok ? '✅ Success!' : '❌ Error: ' + JSON.stringify(result.error || result));
+    }
+
+    function addStation() {
+      callApi('add', {
+        name: document.getElementById('add-name').value,
+        lat: document.getElementById('add-lat').value,
+        lng: document.getElementById('add-lng').value,
+        phone: document.getElementById('add-phone').value,
+        battery_total: document.getElementById('add-total').value,
+        battery_available: document.getElementById('add-available').value
+      });
+    }
+
+    function updateStation() {
+      const id = document.getElementById('update-id').value;
+      if (!id) return alert('Record ID is required');
+      
+      const updates = {};
+      if (document.getElementById('update-name').value) updates.name = document.getElementById('update-name').value;
+      if (document.getElementById('update-lat').value) updates.lat = document.getElementById('update-lat').value;
+      if (document.getElementById('update-lng').value) updates.lng = document.getElementById('update-lng').value;
+      if (document.getElementById('update-phone').value) updates.phone = document.getElementById('update-phone').value;
+      if (document.getElementById('update-available').value) updates.battery_available = document.getElementById('update-available').value;
+
+      callApi('update', { recordId: id, ...updates });
+    }
+  </script>
+
+  <p><i>💡 Tip: Find Record ID in Airtable by clicking ••• → "Copy record ID"</i></p>
+</body>
+</html>
