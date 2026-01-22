@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
     return res.status(500).json({ error: 'Airtable config missing' });
   }
-
+console.log('>>> AIRTABLE_BASE_ID:112test');
   try {
     const response = await fetch(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Stations`,
@@ -26,4 +26,5 @@ export default async function handler(req, res) {
   }
 
 }
+
 
