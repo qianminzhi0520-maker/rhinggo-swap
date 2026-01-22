@@ -13,6 +13,8 @@ export default async function handler(req, res) {
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Stations`,
       { headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` } }
     );
+      console.log('>>> AIRTABLE_BASE_ID:', response);
+      
     if (!response.ok) throw new Error(await response.text());
     
     const data = await response.json();
@@ -24,3 +26,4 @@ export default async function handler(req, res) {
   }
 
 }
+
